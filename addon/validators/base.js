@@ -60,6 +60,15 @@ export default Ember.Object.extend({
     }
   }),
   canValidate: function() {
+    var parts = this.property.split('.');
+    var field = parts.pop();
+    var modelPath = parts.join('.');
+
+    if (this.get(modelPath + '.changedAttributes')) {
+      var propertyChanges = this.get(modelPath).changedAttributes()[field];
+      if (Ember.isEmpty(propertyChanges)) { return false; }
+    }
+
     if (typeof(this.conditionals) === 'object') {
       if (this.conditionals['if']) {
         if (typeof(this.conditionals['if']) === 'function') {
